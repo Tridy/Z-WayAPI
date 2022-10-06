@@ -2,7 +2,7 @@
 
 ## 0. What is this project for
 
-This is a test solution that shows how to communicate with Z-WAY Automation API from a C# application. [Refit]: https://github.com/reactiveui/refit is used to help with the REST communication in the project.
+This is a test solution that shows how to communicate with Z-WAY Automation API from a C# application. [Refit](https://github.com/reactiveui/refit) is used to help with the REST communication in the project.
 
 ## 1. Authentication
 
