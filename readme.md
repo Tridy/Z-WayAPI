@@ -67,8 +67,6 @@ I also have discovered that from the Web UI device management, for each device, 
 
 sources used:
 
-​	https://z-wave.me/files/manual/z-way/Special_topics_Developers.html#SECTION001412000000000000000
-​	https://gist.github.com/integrii/021f272f2cad0540fc3c
+https://z-wave.me/files/manual/z-way/Special_topics_Developers.html#SECTION001412000000000000000
 
-
-
+https://gist.github.com/integrii/021f272f2cad0540fc3c
