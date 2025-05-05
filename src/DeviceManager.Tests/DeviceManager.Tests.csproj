@@ -1,39 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
-      <UserSecretsId>9e79dcb1-384f-4d5f-9ea5-91b55fe0eb57</UserSecretsId>
-  </PropertyGroup>
+        <UserSecretsId>9e79dcb1-384f-4d5f-9ea5-91b55fe0eb57</UserSecretsId>
+    </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.2-mauipre.1.22102.15" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.2-mauipre.1.22102.15" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.1.2">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.4"/>
+        <PackageReference Include="TUnit" Version="0.19.116" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DeviceAutomation.Tests\DeviceAutomation.Tests.csproj" />
-      <ProjectReference Include="..\DeviceAutomation\DeviceAutomation.csproj" />
-      <ProjectReference Include="..\DeviceManager\DeviceManager.csproj" />
+        <ProjectReference Include="..\DeviceAutomation.Tests\DeviceAutomation.Tests.csproj"/>
+        <ProjectReference Include="..\DeviceAutomation\DeviceAutomation.csproj"/>
+        <ProjectReference Include="..\DeviceManager\DeviceManager.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="json\devices.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

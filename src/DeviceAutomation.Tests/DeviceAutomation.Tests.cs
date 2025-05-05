@@ -1,6 +1,11 @@
-using System.Reflection;
+using System.IO;
+using System.Threading.Tasks;
+
+using DeviceAutomation;
 using DeviceAutomation.Model;
 using Microsoft.Extensions.Configuration;
+
+using Assembly = System.Reflection.Assembly;
 
 namespace DeviceManager.Tests;
 
@@ -11,32 +16,34 @@ public class DeviceAutomationTests
     public DeviceAutomationTests() 
     {
         _configuration = new ConfigurationBuilder()
-            .AddUserSecrets(Assembly.GetExecutingAssembly(), false)
-        .Build();
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: false)
+            .Build();
     }
 
     private const string DEVICE_NAME = "ZWayVDev_zway_46-0-37"; // change this by finding the device from CanGetDevicesInfo
 
-    [Fact]
+    [Test, Explicit]
     public async Task CanGetDevicesInfo()
     {
-        var manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
-        var result = await manager.GetDevicesInfoAsync();
-        Assert.NotNull(result);
+        IDeviceAutomation manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
+        DevicesInfo result = await manager.GetDevicesInfoAsync();
+        await Assert.That(result.Data.Devices).HasCount().GreaterThan(0);
     }
 
-    [Fact]
+    [Test, Explicit]
     public async Task CanGetDeviceInfo()
     {
-        var manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
+        IDeviceAutomation manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
         DeviceInfo result = await manager.GetDeviceInfoAsync(DEVICE_NAME);
-        Assert.NotNull(result);
+        await Assert.That(result.Data.Id).IsNotNull();
     }
 
-    [Fact]
+    [Test, Explicit]
     public async Task SetDeviceOnOff()
     {
-        var manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
+        IDeviceAutomation manager = DeviceAutomation.DeviceAutomation.FromConfiguration(_configuration);
         await manager.SendDeviceCommandAsync(DEVICE_NAME, "on");
         await Task.Delay(1000);
         await manager.SendDeviceCommandAsync(DEVICE_NAME, "off");

@@ -1,9 +1,21 @@
-﻿using DeviceAutomation.Model;
+﻿using System;
+using System.Collections.Generic;
+
+using DeviceAutomation.Model;
 using Microsoft.Extensions.Configuration;
 using Refit;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace DeviceAutomation;
+
+public interface IDeviceAutomation
+{
+    Task<DevicesInfo> GetDevicesInfoAsync();
+    Task<DeviceInfo> GetDeviceInfoAsync(string deviceName);
+    Task SendDeviceCommandAsync(string deviceName, string on);
+}
 
 public class DeviceAutomation: IDeviceAutomation
 {
@@ -21,10 +33,10 @@ public class DeviceAutomation: IDeviceAutomation
         _configuration = GetSettingsFromConfiguration(configuration);
     }
 
-    private IDeviceAutomation GetDeviceAutomation()
+    private IDeviceAutomationApi GetDeviceAutomation()
     {
         HttpClient client = GetHttpClient();
-        var _api = RestService.For<IDeviceAutomation>(client);
+        var _api = RestService.For<IDeviceAutomationApi>(client);
         return _api;
     }
 
@@ -45,7 +57,7 @@ public class DeviceAutomation: IDeviceAutomation
     private Configuration GetSettingsFromConfiguration(IConfiguration configuration)
     {
         string _ip = configuration["IPAddress"] ?? throw new KeyNotFoundException("Cannot find 'IPAddress' in the configuration.");
-        int _port = configuration["port"] == null ? throw new KeyNotFoundException("Cannot find 'port' in the configuration.") : int.Parse(configuration["port"]);
+        int _port = configuration["port"] == null ? throw new KeyNotFoundException("Cannot find 'port' in the configuration.") : int.Parse(configuration["port"] ?? throw new Exception("Cannot find 'port' in the configuration."));
         string _token = configuration["token"] ?? throw new KeyNotFoundException("Cannot find 'token' in the configuration.");
 
         return new Configuration
@@ -58,15 +70,20 @@ public class DeviceAutomation: IDeviceAutomation
 
     public async Task<DevicesInfo> GetDevicesInfoAsync()
     {
-        var deviceAutomation = GetDeviceAutomation();
-        var result = await deviceAutomation.GetDevicesInfoAsync();
+        IDeviceAutomationApi deviceAutomation = GetDeviceAutomation();
+        ApiResponse<DevicesInfo> apiResult = await deviceAutomation.GetDevicesInfoAsync();
+        await apiResult.EnsureSuccessfulAsync().ConfigureAwait(false);
+        DevicesInfo result = apiResult.Content ?? throw new InvalidOperationException("DevicesInfo is null");
         return result;
     }
 
-    public async Task<DeviceInfo> GetDeviceInfoAsync(string device)
+    public async Task<DeviceInfo> GetDeviceInfoAsync(string deviceName)
     {
-        var deviceAutomation = GetDeviceAutomation();
-        var result = await deviceAutomation.GetDeviceInfoAsync(device);
+        IDeviceAutomationApi deviceAutomation = GetDeviceAutomation();
+        // ApiResponse<string> apiResult1 = await deviceAutomation.GetDeviceInfoAsync2(deviceName);
+        ApiResponse<DeviceInfo> apiResult = await deviceAutomation.GetDeviceInfoAsync(deviceName);
+        await apiResult.EnsureSuccessfulAsync().ConfigureAwait(false);
+        DeviceInfo result = apiResult.Content ?? throw new InvalidOperationException("DeviceInfo is null");
         return result;
     }
 

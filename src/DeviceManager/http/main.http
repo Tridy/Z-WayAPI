@@ -1,0 +1,3 @@
+### Device call example through HTTP
+GET http://192.168.1.12:8083/ZAutomation/api/v1/devices/<DEVICE-ID>/command/on
+ZWAYSession: <API-KEY>

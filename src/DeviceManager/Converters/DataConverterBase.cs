@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace DeviceManager.Converters
 {
-    public abstract class DataConverterBase<T> : JsonConverter<Dictionary<T, object>>
+    public abstract class DataConverterBase<T> : JsonConverter<Dictionary<T, object>> where T : notnull
     {
         public override Dictionary<T, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -27,7 +29,7 @@ namespace DeviceManager.Converters
                 }
 
                 string? propertyName = reader.GetString();
-                T property = CastToKeyType(propertyName);
+                T property = CastToKeyType(propertyName!);
 
                 reader.Read();
 
@@ -39,7 +41,7 @@ namespace DeviceManager.Converters
                 else if (reader.TokenType == JsonTokenType.String)
                 {
                     var value = reader.GetString();
-                    results.Add(property, value);
+                    results.Add(property, value!);
                 }
                 else if (reader.TokenType == JsonTokenType.Number)
                 {
@@ -55,7 +57,7 @@ namespace DeviceManager.Converters
                 }
                 else if (reader.TokenType == JsonTokenType.Null)
                 {
-                    results.Add(property, null);
+                    results.Add(property, null!);
                 }
                 else if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
                 {

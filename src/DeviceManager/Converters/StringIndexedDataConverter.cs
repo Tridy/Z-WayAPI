@@ -1,4 +1,7 @@
-﻿namespace DeviceManager.Converters
+﻿using System;
+using System.Collections.Generic;
+
+namespace DeviceManager.Converters
 {
     public class StringIndexedDataConverter : DataConverterBase<string>
     {
