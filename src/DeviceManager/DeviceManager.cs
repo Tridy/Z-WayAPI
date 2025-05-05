@@ -1,11 +1,22 @@
-﻿using DeviceManager.Converters;
+﻿using System;
+using System.Collections.Generic;
+
+using DeviceManager.Converters;
 using DeviceManager.Model;
 using Microsoft.Extensions.Configuration;
 using Refit;
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace DeviceManager;
+
+public interface IDeviceManager
+{
+    Task<ControllerInfo> GetControllerInfoAsync();
+    Task<Dictionary<int, Device>> GetDevicesAsync();
+}
 
 public class DeviceManager: IDeviceManager
 {
@@ -24,7 +35,7 @@ public class DeviceManager: IDeviceManager
         _configuration = GetSettingsFromConfiguration(configuration);
     }
 
-    private IDeviceManager GetDeviceManager(JsonSerializerOptions options)
+    private IDeviceManagerApi GetDeviceManager(JsonSerializerOptions options)
     {
         HttpClient client = GetHttpClient();
 
@@ -33,15 +44,15 @@ public class DeviceManager: IDeviceManager
             ContentSerializer = new SystemTextJsonContentSerializer(options)
         };
 
-        var _api = RestService.For<IDeviceManager>(client, settings);
+        var _api = RestService.For<IDeviceManagerApi>(client, settings);
 
         return _api;
     }
 
-    private IDeviceManager GetDeviceManager()
+    private IDeviceManagerApi GetDeviceManager()
     {
         HttpClient client = GetHttpClient();
-        var _api = RestService.For<IDeviceManager>(client);
+        var _api = RestService.For<IDeviceManagerApi>(client);
         return _api;
     }
 
@@ -62,7 +73,7 @@ public class DeviceManager: IDeviceManager
     private Configuration GetSettingsFromConfiguration(IConfiguration configuration)
     {
         string _ip = configuration["IPAddress"] ?? throw new KeyNotFoundException("Cannot find 'IPAddress' in the configuration.");
-        int _port = configuration["port"] == null ? throw new KeyNotFoundException("Cannot find 'port' in the configuration.") : int.Parse(configuration["port"]);
+        int _port = configuration["port"] == null ? throw new KeyNotFoundException("Cannot find 'port' in the configuration.") : int.Parse(configuration["port"] ?? throw new Exception("Cannot find 'port' in the configuration."));
         string _token = configuration["token"] ?? throw new KeyNotFoundException("Cannot find 'token' in the configuration.");
 
         return new Configuration
@@ -75,8 +86,11 @@ public class DeviceManager: IDeviceManager
 
     public async Task<ControllerInfo> GetControllerInfoAsync()
     {
-        var api = GetDeviceManager();
-        return await api.GetControllerInfoAsync();
+        IDeviceManagerApi api = GetDeviceManager();
+        ApiResponse<ControllerInfo> apiResult = await api.GetControllerInfoAsync();
+        await apiResult.EnsureSuccessfulAsync().ConfigureAwait(false);
+        ControllerInfo result = apiResult.Content ?? throw new InvalidOperationException("ControllerInfo is null");
+        return result;
     }
 
     public async Task<Dictionary<int, Device>> GetDevicesAsync()

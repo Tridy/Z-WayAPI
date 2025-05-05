@@ -1,15 +1,17 @@
+using System.Threading.Tasks;
+
 using DeviceAutomation.Model;
 using Refit;
 
 namespace DeviceAutomation;
 
-public interface IDeviceAutomation
+public interface IDeviceAutomationApi
 {
     [Get("")]
-    Task<DevicesInfo> GetDevicesInfoAsync();
-
+    Task<ApiResponse<DevicesInfo>> GetDevicesInfoAsync();
+    
     [Get("/{deviceName}")]
-    Task<DeviceInfo> GetDeviceInfoAsync(string deviceName);
+    Task<ApiResponse<DeviceInfo>> GetDeviceInfoAsync(string deviceName);
 
     [Get("/{deviceName}/command/{command}")]
     Task SendDeviceCommandAsync(string deviceName, string command);

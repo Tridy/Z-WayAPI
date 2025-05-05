@@ -1,47 +1,131 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace DeviceAutomation.Model;
 
 public class DevicesInfo
 {
-    public DevicesData data { get; set; }
-    public int code { get; set; }
-    public string message { get; set; }
-    public object error { get; set; }
+    public DevicesInfo()
+    {
+        this.Data = new DevicesData();
+        this.Code = -1;
+        this.Message = "N/A";
+        this.Error = null;
+    }
+
+    [JsonPropertyName("data")]
+    public DevicesData Data { get; set; }
+
+    [JsonPropertyName("code")]
+    public int Code { get; set; }
+
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
+
+    [JsonPropertyName("error")]
+    public object? Error { get; set; }
 }
 
 public class DevicesData
 {
-    public bool structureChanged { get; set; }
-    public int updateTime { get; set; }
-    public Device[] devices { get; set; }
+    public DevicesData()
+    {
+        this.Devices = Array.Empty<Device>();
+    }
+
+    [JsonPropertyName("structureChanged")]
+    public bool StructureChanged { get; set; }
+
+    [JsonPropertyName("updateTime")]
+    public int UpdateTime { get; set; }
+
+    [JsonPropertyName("devices")]
+    public Device[] Devices { get; set; }
 }
 
 public class Device
 {
-    public int creationTime { get; set; }
-    public int creatorId { get; set; }
-    public Customicons customIcons { get; set; }
-    public string deviceType { get; set; }
-    public string firmware { get; set; }
-    public int h { get; set; }
-    public bool hasHistory { get; set; }
-    public string id { get; set; }
-    public int location { get; set; }
-    public string locationName { get; set; }
-    public string manufacturer { get; set; }
-    public Metrics metrics { get; set; }
-    public Order order { get; set; }
-    public bool permanently_hidden { get; set; }
-    public string probeType { get; set; }
-    public string product { get; set; }
-    public object[] tags { get; set; }
-    public string technology { get; set; }
-    public bool visibility { get; set; }
-    public int updateTime { get; set; }
-    public int? nodeId { get; set; }
+    public Device()
+    {
+        this.CustomIcons = new CustomIcons();
+        this.DeviceType = "N/A";
+        this.Firmware = "N/A";
+        this.Id = "N/A";
+        this.LocationName = "N/A";
+        this.Manufacturer = "N/A";
+        this.Metrics = new Metrics();
+        this.Order = new Order();
+        this.ProbeType = "N/A";
+        this.Product = "N/A";
+        this.Tags = Array.Empty<object>();
+        this.Technology = "N/A";
+        this.BindingName = "N/A";
+        this.NodeId = "N/A";
+    }
+
+    [JsonPropertyName("creationTime")]
+    public int CreationTime { get; set; }
+
+    [JsonPropertyName("creatorId")]
+    public int CreatorId { get; set; }
+
+    [JsonPropertyName("customIcons")]
+    public CustomIcons CustomIcons { get; set; }
+
+    [JsonPropertyName("deviceType")]
+    public string DeviceType { get; set; }
+
+    [JsonPropertyName("firmware")]
+    public string Firmware { get; set; }
+
+    [JsonPropertyName("h")]
+    public int H { get; set; }
+
+    [JsonPropertyName("hasHistory")]
+    public bool HasHistory { get; set; }
+
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+
+    [JsonPropertyName("location")]
+    public int Location { get; set; }
+
+    [JsonPropertyName("locationName")]
+    public string LocationName { get; set; }
+
+    [JsonPropertyName("manufacturer")]
+    public string Manufacturer { get; set; }
+
+    [JsonPropertyName("metrics")]
+    public Metrics Metrics { get; set; }
+
+    [JsonPropertyName("order")]
+    public Order Order { get; set; }
+
+    [JsonPropertyName("permanently_hidden")]
+    public bool PermanentlyHidden { get; set; }
+
+    [JsonPropertyName("probeType")]
+    public string ProbeType { get; set; }
+
+    [JsonPropertyName("product")]
+    public string Product { get; set; }
+
+    [JsonPropertyName("tags")]
+    public object[] Tags { get; set; }
+
+    [JsonPropertyName("technology")]
+    public string Technology { get; set; }
+
+    [JsonPropertyName("visibility")]
+    public bool Visibility { get; set; }
+
+    [JsonPropertyName("updateTime")]
+    public int UpdateTime { get; set; }
+
+    [JsonPropertyName("bindingName")]
+    public string BindingName { get; set; }
+
+    [JsonPropertyName("nodeId")]
+    public object NodeId { get; set; }
 }

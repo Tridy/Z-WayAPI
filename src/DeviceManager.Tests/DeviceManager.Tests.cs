@@ -1,6 +1,11 @@
-using System.Reflection;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
 using DeviceManager.Model;
 using Microsoft.Extensions.Configuration;
+
+using Assembly = System.Reflection.Assembly;
 
 namespace DeviceManager.Tests;
 
@@ -11,23 +16,25 @@ public class DeviceManagerTests
     public DeviceManagerTests() 
     {
         _configuration = new ConfigurationBuilder()
-            .AddUserSecrets(Assembly.GetExecutingAssembly(), false)
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: false)
         .Build();
     }
     
-    [Fact]
+    [Test, Explicit]
     public async Task CanGetController()
     {
         var deviceManager = DeviceManager.FromConfiguration(_configuration);
         ControllerInfo result = await deviceManager.GetControllerInfoAsync();
-        Assert.NotNull(result);
+        await Assert.That(result).IsNotNull();
     }
 
-    [Fact]
+    [Test, Explicit]
     public async Task CanGetDevices()
     {
         var deviceManager = DeviceManager.FromConfiguration(_configuration);
         Dictionary<int, Device> result = await deviceManager.GetDevicesAsync();
-        Assert.NotNull(result);
+        await Assert.That(result).HasCount().GreaterThan(0);
     }
 }
